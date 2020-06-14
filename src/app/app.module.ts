@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { TrackerPageComponent } from './tracker-page/tracker-page.component';
+import { CovidValueService } from 'src/services/covid-value-fetcher.service';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,7 @@ import { TrackerPageComponent } from './tracker-page/tracker-page.component';
     BrowserModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [CovidValueService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -2,37 +2,63 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError, Subject } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { CovidValueSet } from 'src/models/covid-value-set.model';
+import { Injectable } from '@angular/core';
+import { CovidValue } from 'src/models/covid-value.model';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class CovidValueService{
-    constructor(private http: HttpClient){}
-    
     private stateCovidData$ = new Subject<CovidValueSet[]>();
 
-    public getStateData(stateCode: string){
-        
+    constructor(private http: HttpClient){
+        this.http.get('https://covidtracking.com/api/v1/states/daily.json').subscribe(data => {
+            var stateData = this.parseStateData(data);
+            this.stateCovidData$.next(stateData);
+        });
+    }
+    
+    public getStatesData(){
+        return this.stateCovidData$.asObservable();    
     }
 
-    private checkStateExistance(stateCode: string){
-        const stateExist = false;
+    private parseStateData(data){
+        let stateData: CovidValueSet[] = [];
 
-        this.stateCovidData$.asObservable().subscribe(data => {
-            if(!data.some(state => state.state.code === stateCode)){
-                //Add state
+        data.forEach(element => {
+            var state = element["state"];
+            var positive = element["positive"];
+            var negative = element["negative"];
+            var date = element["date"];
+
+            var valueSet = new CovidValue(positive + negative, positive, this.parseDate(date));
+            var stateSet = stateData.find(stateObj => {
+                return stateObj.state === state;
+            });
+
+            if(stateSet === undefined){
+                //console.log("UNDEFINED");
+                let newStateSet: CovidValueSet = new CovidValueSet(state);
+                newStateSet.valueSet.push(valueSet);
+                stateData.push(newStateSet);
+            }
+            else{
+                //console.log("DEFINED");
+                stateSet.valueSet.unshift(valueSet);
             }
         });
+
+        return stateData;
     }
 
-    private addStateData(stateCode: string){
-        this.http.get('https://covidtracking.com/api/v1/states/' + stateCode + '/daily.json').subscribe(data => {
-            console.log("DATA: " + data);
-        });
-    }
+    private parseDate(date: number): Date{
+        var dateStr = date.toString();
+        
+        var year = Number(dateStr.substring(0, 4));
+        var month = Number(dateStr.substring(4, 6));
+        var day = Number(dateStr.substring(6, 8));
 
-    private parseStateData(){
-
-    }
-
-    private clearStateData(){
-
+        var parsedDate = new Date(year, month, day);
+        return parsedDate;
     }
 }

@@ -1,0 +1,7 @@
+{
+    "/api/*": {
+      "target": "https://covidtracking.com/api/",
+      "secure": false,
+      "logLevel": "debug"
+    }
+  }

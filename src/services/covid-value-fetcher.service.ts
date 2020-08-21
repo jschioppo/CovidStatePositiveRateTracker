@@ -12,7 +12,7 @@ export class CovidValueService{
     private stateCovidData$ = new Subject<CovidValueSet[]>();
 
     constructor(private http: HttpClient){
-        this.http.get('https://covidtracking.com/api/v1/states/daily.json').subscribe(data => {
+        this.http.get('https://api.covidtracking.com/v1/states/daily.json').subscribe(data => {
             var stateData = this.parseStateData(data);
             this.stateCovidData$.next(stateData);
         });
@@ -37,15 +37,14 @@ export class CovidValueService{
             });
 
             if(stateSet === undefined){
-                //console.log("UNDEFINED");
                 let newStateSet: CovidValueSet = new CovidValueSet(state);
                 newStateSet.valueSet.push(valueSet);
                 stateData.push(newStateSet);
             }
             else{
-                //console.log("DEFINED");
                 stateSet.valueSet.unshift(valueSet);
             }
+
         });
 
         return stateData;
@@ -55,10 +54,11 @@ export class CovidValueService{
         var dateStr = date.toString();
         
         var year = Number(dateStr.substring(0, 4));
-        var month = Number(dateStr.substring(4, 6));
+        var month = Number(dateStr.substring(4, 6)) - 1;
         var day = Number(dateStr.substring(6, 8));
 
         var parsedDate = new Date(year, month, day);
+
         return parsedDate;
     }
 }

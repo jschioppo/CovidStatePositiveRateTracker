@@ -4,5 +4,7 @@
             <div class="state-text">State</div>
         </div>
     </div>
-    <div class="chart-panel"></div>
+    <div class="chart-panel">
+        <app-graph-view *ngIf='stateData' [stateData]='stateData'></app-graph-view>
+    </div>
 </div>

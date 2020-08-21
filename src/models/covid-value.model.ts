@@ -10,6 +10,7 @@ export class CovidValue{
         this.tested = tested;
         this.positive = positive;
         this.date = date;
-        this.percentPositive = positive / tested;
+        //this.percentPositive = Math.round((positive / tested) * 100 + Number.EPSILON);
+        this.percentPositive = Number(((positive / tested) * 100).toFixed(2));
     }
 }

@@ -11,8 +11,10 @@ import { State } from 'src/models/state.model';
 })
 export class TrackerPageComponent implements OnInit {
 
-  stateCovidData$: Observable<CovidValueSet[]>;
+  //stateCovidData$: Observable<CovidValueSet[]>;
   stateCovidData: CovidValueSet[];
+  stateData: CovidValueSet;
+
   states: State[] = [
     {code: "AK", label: "Alaska"},
     {code: "AS", label: "American Samoa"},
@@ -73,11 +75,15 @@ export class TrackerPageComponent implements OnInit {
     {code: "WI", label: "Wisconsin"},
     {code: "WY", label: "Wyoming"}
   ];
+
   constructor(private covidValueService: CovidValueService) {
-    this.stateCovidData$ = covidValueService.getStatesData();
-    covidValueService.getStatesData().subscribe(data => this.stateCovidData = data);
+    covidValueService.getStatesData().subscribe(data => {
+      this.stateCovidData = data;
+      this.stateData = this.stateCovidData[0];
+    });
   }
 
   ngOnInit(): void {
+    console.log("PARENT INIT");
   }
 }

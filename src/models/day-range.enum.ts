@@ -1,4 +1,4 @@
 export enum DayRange{
-    Week = 0,
-    Month = 1
+    Week = 7,
+    Month = 30
 }

@@ -14,9 +14,7 @@ export class GraphViewComponent implements OnInit {
 
   @Input() stateData: CovidValueSet;
 
-  valueSetInRange: CovidValue[];
   lineChartModel: LineGraph = new LineGraph();
-
   dayRange: DayRange = DayRange.Week;
 
   constructor() {
@@ -24,7 +22,7 @@ export class GraphViewComponent implements OnInit {
   }
 
   public ngOnInit() {
-    
+    this.setGraphOptions();
     this.initializeGraph();
   }
 
@@ -35,26 +33,14 @@ export class GraphViewComponent implements OnInit {
   initializeGraph(): void{
     
     this.lineChartModel.lineChartData = [];
-    var days = 0;
+    this.lineChartModel.lineChartLabels = [];
 
-    switch(this.dayRange){
-      case DayRange.Week:
-        days = 7;
-        break;
-      case DayRange.Month:
-        days = 30;
-        break;
-    }
-
-    this.valueSetInRange = [];
-    this.valueSetInRange = this.stateData.valueSet.slice(Math.max(this.stateData.valueSet.length - days, 0));
+    //Get the last X days worth of data
+    let valueSetInRange: CovidValue[] = this.stateData.valueSet.slice(Math.max(this.stateData.valueSet.length - this.dayRange, 0));
     
-    this.lineChartModel.lineChartOptions = {};
-
     let maxPercent: number = 0;
 
-    this.lineChartModel.lineChartLabels = [];
-    this.valueSetInRange.forEach(value => {
+    valueSetInRange.forEach(value => {
 
       if(value.percentPositive > maxPercent) maxPercent = value.percentPositive;
 
@@ -63,22 +49,22 @@ export class GraphViewComponent implements OnInit {
 
       this.lineChartModel.lineChartLabels.push(month.toString() + "/" + day.toString());
     });
+    this.lineChartModel.lineChartOptions.scales.yAxes[0].ticks.max = Math.ceil(maxPercent);
 
-    this.setGraphOptions(maxPercent);
     
     let dataSet: ChartDataSets = {
       data: [],
       label: '% Positive'
     };
 
-    this.valueSetInRange.forEach(set => {
+    valueSetInRange.forEach(set => {
       dataSet.data.push(set.percentPositive);
     });
 
     this.lineChartModel.lineChartData.push(dataSet);
   }
 
-  setGraphOptions(maxPercent: number): void{
+  setGraphOptions(): void{
     this.lineChartModel.lineChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
@@ -86,7 +72,7 @@ export class GraphViewComponent implements OnInit {
         yAxes: [{
           ticks: {
             stepSize: 1,
-            max: Math.ceil(maxPercent),
+            max: 100,
             min: 0,
             sampleSize: 1,
             fontStyle: "bold"

@@ -11,7 +11,6 @@ import { State } from 'src/models/state.model';
 })
 export class TrackerPageComponent implements OnInit {
 
-  //stateCovidData$: Observable<CovidValueSet[]>;
   stateCovidData: CovidValueSet[];
   stateData: CovidValueSet;
 
@@ -84,6 +83,5 @@ export class TrackerPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("PARENT INIT");
   }
 }

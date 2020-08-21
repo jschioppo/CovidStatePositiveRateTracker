@@ -23,31 +23,35 @@ export class CovidValueService{
     }
 
     private parseStateData(data){
-        let stateData: CovidValueSet[] = [];
+        let allStatesCovidData: CovidValueSet[] = [];
 
-        data.forEach(element => {
-            var state = element["state"];
-            var positive = element["positive"];
-            var negative = element["negative"];
-            var date = element["date"];
+        data.forEach(covidData => {
+            console.log("ELEMENT: ", covidData);
 
-            var valueSet = new CovidValue(positive + negative, positive, this.parseDate(date));
-            var stateSet = stateData.find(stateObj => {
+            var state = covidData["state"];
+            var positive = covidData["positive"];
+            var negative = covidData["negative"];
+            var date = covidData["date"];
+
+            var covidValue = new CovidValue(positive + negative, positive, this.parseDate(date));
+            var stateCovidValues = allStatesCovidData.find(stateObj => {
                 return stateObj.state === state;
             });
 
-            if(stateSet === undefined){
+            //First check is for states that aren't in the Covid Value Set yet (will run once for each state)
+            if(stateCovidValues === undefined){
                 let newStateSet: CovidValueSet = new CovidValueSet(state);
-                newStateSet.valueSet.push(valueSet);
-                stateData.push(newStateSet);
+                
+                newStateSet.valueSet.push(covidValue);
+                allStatesCovidData.push(newStateSet);
             }
             else{
-                stateSet.valueSet.unshift(valueSet);
+                stateCovidValues.valueSet.unshift(covidValue);
             }
 
         });
 
-        return stateData;
+        return allStatesCovidData;
     }
 
     private parseDate(date: number): Date{

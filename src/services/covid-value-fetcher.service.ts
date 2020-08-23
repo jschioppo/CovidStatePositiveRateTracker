@@ -4,18 +4,22 @@ import { catchError, retry } from 'rxjs/operators';
 import { CovidValueSet } from 'src/models/covid-value-set.model';
 import { Injectable } from '@angular/core';
 import { CovidValue } from 'src/models/covid-value.model';
+import { StateService } from './state-helper.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CovidValueService{
     private stateCovidData$ = new Subject<CovidValueSet[]>();
+    static stateService: StateService;
 
-    constructor(private http: HttpClient){
+    constructor(private http: HttpClient, private stateService: StateService){
         this.http.get('https://api.covidtracking.com/v1/states/daily.json').subscribe(data => {
             var stateData = this.parseStateData(data);
             this.stateCovidData$.next(stateData);
         });
+
+        this.stateService = stateService;
     }
     
     public getStatesData(){
@@ -26,27 +30,27 @@ export class CovidValueService{
         let allStatesCovidData: CovidValueSet[] = [];
 
         data.forEach(covidData => {
-            console.log("ELEMENT: ", covidData);
-
-            var state = covidData["state"];
+            var stateCode: string = covidData["state"];
             var positive = covidData["positive"];
             var negative = covidData["negative"];
             var date = covidData["date"];
 
             var covidValue = new CovidValue(positive + negative, positive, this.parseDate(date));
-            var stateCovidValues = allStatesCovidData.find(stateObj => {
-                return stateObj.state === state;
-            });
+
+            var stateCovidDataSet = this.stateService.getStateDataSet(allStatesCovidData, stateCode);
 
             //First check is for states that aren't in the Covid Value Set yet (will run once for each state)
-            if(stateCovidValues === undefined){
-                let newStateSet: CovidValueSet = new CovidValueSet(state);
+            if(stateCovidDataSet === undefined){
+                let newStateSet: CovidValueSet = {state: this.stateService.getState(stateCode), dayData: []};
                 
-                newStateSet.valueSet.push(covidValue);
+                //Push the first day of data into the array
+                newStateSet.dayData.push(covidValue);
+
+                //Add the state to the rest of the states
                 allStatesCovidData.push(newStateSet);
             }
             else{
-                stateCovidValues.valueSet.unshift(covidValue);
+                stateCovidDataSet.dayData.unshift(covidValue);
             }
 
         });

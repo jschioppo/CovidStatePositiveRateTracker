@@ -1,7 +1,41 @@
 <div class="chart-container">
     <div class="details-panel">
         <div class="panel-header">
-            <div class="state-text">State</div>
+            Options
+        </div>
+        <div class="details">
+            <div class="sub-details-header">
+                Date Range
+            </div>
+            <div class="btn-group btn-group-toggle">
+                <label class="btn btn-secondary active">
+                    <input type="radio" name="history-radio" value="week" id="history-radio-week"> Week
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="history-radio" value="week" id="history-radio-month"> Month
+                </label>
+                <!-- <label for="history-radio-week">Week</label> -->
+                <label class="btn btn-secondary">
+                    <input type="radio" name="history-radio" value="week" id="history-radio-threemonth">Three Months
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="history-radio" value="week" id="history-radio-all">All Time    
+                </label>
+                <!-- <label for="history-radio-month">Month</label> -->
+                
+                <!-- <label for="history-radio-threemonth">3 Months</label> -->
+                
+                <!-- <label for="history-radio-all">All Time</label> -->
+            </div>
+            <div class="sub-details-header">
+                State
+            </div>
+            <div>
+                <select class="form-control" (change)="onStateChange($event.target.value)">
+                    <option></option>
+                    <option *ngFor="let state of states" [value]="state.code">{{state.label}}</option>
+                </select>
+            </div>
         </div>
     </div>
     <div class="chart-panel">

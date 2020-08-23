@@ -1,12 +1,7 @@
-import { State } from './state.model';
 import { CovidValue } from './covid-value.model';
+import { State } from './state.model';
 
-export class CovidValueSet{
-    state: string;
-    valueSet: CovidValue[];
-
-    constructor(state: string){
-        this.state = state;
-        this.valueSet = [];
-    }
+export interface CovidValueSet{
+    state: State;
+    dayData: CovidValue[];
 }

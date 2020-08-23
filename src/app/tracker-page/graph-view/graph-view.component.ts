@@ -22,21 +22,20 @@ export class GraphViewComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.setGraphOptions();
-    this.initializeGraph();
   }
 
   ngOnChanges(){
+    if(this.lineChartModel == undefined){
+      
+    }
+    this.lineChartModel = new LineGraph();
+    this.initializeGraph();
   }
 
 
   initializeGraph(): void{
-    
-    this.lineChartModel.lineChartData = [];
-    this.lineChartModel.lineChartLabels = [];
-
     //Get the last X days worth of data
-    let valueSetInRange: CovidValue[] = this.stateData.valueSet.slice(Math.max(this.stateData.valueSet.length - this.dayRange, 0));
+    let valueSetInRange: CovidValue[] = this.stateData.dayData.slice(Math.max(this.stateData.dayData.length - this.dayRange, 0));
     
     let maxPercent: number = 0;
 
@@ -62,28 +61,5 @@ export class GraphViewComponent implements OnInit {
     });
 
     this.lineChartModel.lineChartData.push(dataSet);
-  }
-
-  setGraphOptions(): void{
-    this.lineChartModel.lineChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        yAxes: [{
-          ticks: {
-            stepSize: 1,
-            max: 100,
-            min: 0,
-            sampleSize: 1,
-            fontStyle: "bold"
-          }
-        }],
-        xAxes: [{
-          ticks: {
-            fontStyle: "bold"
-          }
-        }]
-      },
-    };
   }
 }

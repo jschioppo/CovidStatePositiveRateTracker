@@ -1,17 +1,41 @@
 import { ChartDataSets, ChartOptions } from 'chart.js';
-import { Color, Label } from 'ng2-charts';
+import { Color, Label, ThemeService } from 'ng2-charts';
 
 export class LineGraph{
 
-    LineGraph(){
-        console.log("CONSTRUCTOR")
-        this.lineChartOptions = {};
+    constructor(){
+        this.lineChartData = [];
+        this.lineChartColors = [];
+        this.lineChartLabels = [];
+        this.lineChartType = 'line';
+        this.lineChartPlugins = [];
+
+        this.lineChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              yAxes: [{
+                ticks: {
+                  stepSize: 1,
+                  max: 100,
+                  min: 0,
+                  sampleSize: 1,
+                  fontStyle: "bold"
+                }
+              }],
+              xAxes: [{
+                ticks: {
+                  fontStyle: "bold"
+                }
+              }]
+            },
+          };
     }
     public lineChartData: ChartDataSets[];
-    public lineChartOptions: (ChartOptions);
+    public lineChartOptions: ChartOptions;
     public lineChartColors: Color[];
     public lineChartLabels: Label[];
     public lineChartLegend: boolean;
-    public lineChartType: string = 'line';
-    public lineChartPlugins = [];
+    public lineChartType: string;
+    public lineChartPlugins: any;
 }

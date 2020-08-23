@@ -13,9 +13,11 @@ import { CovidValue } from 'src/models/covid-value.model';
 export class GraphViewComponent implements OnInit {
 
   @Input() stateData: CovidValueSet;
+  @Input() dayRange: number;
 
   lineChartModel: LineGraph = new LineGraph();
-  dayRange: DayRange = DayRange.Week;
+  dayRange2: DayRange = DayRange.Week;
+  
 
   constructor() {
     
@@ -25,9 +27,6 @@ export class GraphViewComponent implements OnInit {
   }
 
   ngOnChanges(){
-    if(this.lineChartModel == undefined){
-      
-    }
     this.lineChartModel = new LineGraph();
     this.initializeGraph();
   }
@@ -35,11 +34,10 @@ export class GraphViewComponent implements OnInit {
 
   initializeGraph(): void{
     //Get the last X days worth of data
-    let valueSetInRange: CovidValue[] = this.stateData.dayData.slice(Math.max(this.stateData.dayData.length - this.dayRange, 0));
+    //let valueSetInRange: CovidValue[] = this.stateData.dayData.slice(Math.max(this.stateData.dayData.length - this.dayRange2, 0));
     
     let maxPercent: number = 0;
-
-    valueSetInRange.forEach(value => {
+    this.stateData.dayData.forEach(value => {
 
       if(value.percentPositive > maxPercent) maxPercent = value.percentPositive;
 
@@ -56,7 +54,7 @@ export class GraphViewComponent implements OnInit {
       label: '% Positive'
     };
 
-    valueSetInRange.forEach(set => {
+    this.stateData.dayData.forEach(set => {
       dataSet.data.push(set.percentPositive);
     });
 

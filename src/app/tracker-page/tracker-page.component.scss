@@ -34,9 +34,24 @@
 .sub-details-header{
     color: white;
     margin-top: 10px;
+    font-size: 18px;
 }
 
 select{
     width: 50%;
     display: inline-block;
+}
+
+.source-text{
+    color: white;
+    margin: 15px 0 15px 0;
+}
+
+.null-graph-text{
+    margin-top: 20%;
+    font-size: 28px;
+    width: 32.5%;
+    margin-right: auto;
+    margin-left: auto;
+    color: #dc3545;
 }

@@ -3,23 +3,26 @@
         <div class="panel-header">
             Options
         </div>
+        <div class="source-text">
+            All data is sourced from <a href="https://covidtracking.com/" target="_blank">The COVID Tracking Project</a>.
+        </div>
         <div class="details">
             <div class="sub-details-header">
                 Date Range
             </div>
             <div class="btn-group btn-group-toggle">
                 <label class="btn btn-secondary active">
-                    <input type="radio" name="history-radio" value="week" id="history-radio-week"> Week
+                    <input type="radio" name="history-radio" value="Week" id="history-radio-week" (change)="onDateRangeChange($event.target.value)" checked="checked"> Week
                 </label>
                 <label class="btn btn-secondary">
-                    <input type="radio" name="history-radio" value="week" id="history-radio-month"> Month
+                    <input type="radio" name="history-radio" value="Month" id="history-radio-month" (change)="onDateRangeChange($event.target.value)"> Month
                 </label>
                 <!-- <label for="history-radio-week">Week</label> -->
                 <label class="btn btn-secondary">
-                    <input type="radio" name="history-radio" value="week" id="history-radio-threemonth">Three Months
+                    <input type="radio" name="history-radio" value="ThreeMonths" id="history-radio-threemonth" (change)="onDateRangeChange($event.target.value)">Three Months
                 </label>
                 <label class="btn btn-secondary">
-                    <input type="radio" name="history-radio" value="week" id="history-radio-all">All Time    
+                    <input type="radio" name="history-radio" value="AllTime" id="history-radio-all" (change)="onDateRangeChange($event.target.value)">All Time    
                 </label>
                 <!-- <label for="history-radio-month">Month</label> -->
                 
@@ -39,6 +42,8 @@
         </div>
     </div>
     <div class="chart-panel">
-        <app-graph-view *ngIf='stateData' [stateData]='stateData'></app-graph-view>
+        <app-graph-view *ngIf='stateCovidData' [stateData]='filteredStateCovidData'></app-graph-view>
+        <div class="null-graph-text" *ngIf="!stateCovidData">Select a state to populate the graph</div>
     </div>
+    
 </div>

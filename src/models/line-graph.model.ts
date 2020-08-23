@@ -15,6 +15,11 @@ export class LineGraph{
             maintainAspectRatio: false,
             scales: {
               yAxes: [{
+                scaleLabel: {
+                  labelString: 'Percent',
+                  display: true,
+                  fontStyle: "bold"
+                },
                 ticks: {
                   stepSize: 1,
                   max: 100,
@@ -25,6 +30,11 @@ export class LineGraph{
               }],
               xAxes: [{
                 ticks: {
+                  fontStyle: "bold"
+                },
+                scaleLabel: {
+                  labelString: "Date",
+                  display: true,
                   fontStyle: "bold"
                 }
               }]

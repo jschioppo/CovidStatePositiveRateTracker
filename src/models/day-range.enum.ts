@@ -1,5 +1,6 @@
 export enum DayRange{
-    Week = 7,
-    Month = 30,
-    ThreeMonths = 90
+    Week = "Week",
+    Month = "Month",
+    ThreeMonths = "ThreeMonths",
+    AllTime = "AllTime"
 }

@@ -3,6 +3,9 @@ import { CovidValueService } from 'src/services/covid-value-fetcher.service';
 import { CovidValueSet } from 'src/models/covid-value-set.model';
 import { State } from 'src/models/state.model';
 import { StateService } from 'src/services/state-helper.service';
+import * as $ from 'jquery';
+import { DateFilterService } from 'src/services/date-filter.service';
+import { DayRange } from 'src/models/day-range.enum';
 
 @Component({
   selector: 'app-tracker-page',
@@ -11,18 +14,26 @@ import { StateService } from 'src/services/state-helper.service';
 })
 export class TrackerPageComponent implements OnInit {
 
-  stateCovidData: CovidValueSet[];
-  stateData: CovidValueSet;
+  countryCovidData: CovidValueSet[];
+  stateCovidData: CovidValueSet;
+  filteredStateCovidData: CovidValueSet;
+  stateCode: string;
   states: State[];
-  private static stateService: StateService
+  dayRange: DayRange = DayRange.Week;
+
+  private static stateService: StateService;
+  private static dateFilterService: DateFilterService;
   
 
-  constructor(private covidValueService: CovidValueService, private stateService: StateService) {
+  constructor(private covidValueService: CovidValueService, private stateService: StateService, private dateFilterService: DateFilterService) {
     this.stateService = stateService;
+    this.dateFilterService = dateFilterService;
+    this.dayRange = DayRange.Week;
+
     this.states = this.stateService.getListOfStates();
 
     covidValueService.getStatesData().subscribe(data => {
-      this.stateCovidData = data;
+      this.countryCovidData = data;
     });
   }
 
@@ -30,6 +41,28 @@ export class TrackerPageComponent implements OnInit {
   }
 
   onStateChange(stateCode){
-    this.stateData = this.stateService.getStateDataSet(this.stateCovidData, stateCode);
+    this.stateCovidData = this.stateService.getStateDataSet(this.countryCovidData, stateCode);
+    this.filterDataSet();
   }
+
+  onDateRangeChange(range){
+    $(':input:checked').parent('.btn').addClass('active');
+    $(':input:not(:checked)').parent('.btn').removeClass('active');
+
+    this.dayRange = DayRange[range];
+    this.filterDataSet();
+    // if(this.stateCovidData != undefined) this.filteredStateCovidData = {
+    //   state: this.stateCovidData.state, 
+    //   dayData: this.dateFilterService.filterDataSet(this.stateCovidData.dayData,this.dayRange)
+    // };
+  }
+
+  private filterDataSet(): void{
+    if(this.stateCovidData != undefined) this.filteredStateCovidData = {
+      state: this.stateCovidData.state, 
+      dayData: this.dateFilterService.filterDataSet(this.stateCovidData.dayData,this.dayRange)
+    };
+  }
+
+
 }

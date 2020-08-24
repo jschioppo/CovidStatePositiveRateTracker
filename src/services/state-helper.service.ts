@@ -72,6 +72,7 @@ export class StateService{
     }
     public getListOfStates(): State[]{
         var states: State[] = [
+            {code: "US", label: "U.S. Cumulative"},
             {code: "AK", label: "Alaska"},
             //{code: "AS", label: "American Samoa"},
             {code: "AZ", label: "Arizona"},
@@ -140,11 +141,4 @@ export class StateService{
             return state.code === code;
         });
     }
-
-    getStateDataSet(statesData: CovidValueSet[], stateCode: string): CovidValueSet{
-        return statesData.find(stateCovidValue => {
-            return stateCovidValue?.state?.code === stateCode;
-        });
-    }
-
 }

@@ -11,23 +11,49 @@ import { StateService } from './state-helper.service';
 })
 export class CovidValueService{
     private stateCovidData$ = new Subject<CovidValueSet[]>();
+    private usCovidData$ = new Subject<CovidValueSet>();
+
     static stateService: StateService;
 
     constructor(private http: HttpClient, private stateService: StateService){
+        this.stateService = stateService;
+
         this.http.get('https://api.covidtracking.com/v1/states/daily.json').subscribe(data => {
             var stateData = this.parseStateData(data);
             this.stateCovidData$.next(stateData);
         });
 
-        this.stateService = stateService;
+        this.http.get('https://api.covidtracking.com/v1/us/daily.json').subscribe(data => {
+            var usData = this.parseUsData(data);
+            this.usCovidData$.next(usData);
+        });
     }
     
     public getStatesData(){
         return this.stateCovidData$.asObservable();    
     }
 
+    public getUsData(){
+        return this.usCovidData$.asObservable();
+    }
+
+    private parseUsData(data){
+
+        var usCovidSet: CovidValueSet = {state: this.stateService.getState('US'), dayData: []};
+        data.forEach(covidData => {
+            var positive = covidData["positive"];
+            var negative = covidData["negative"];
+            var date = covidData["date"];
+
+            var covidValue = new CovidValue(positive + negative, positive, this.parseDate(date));
+            usCovidSet.dayData.unshift(covidValue);
+        });
+        
+        return usCovidSet;
+    }
+
     private parseStateData(data){
-        let allStatesCovidData: CovidValueSet[] = [];
+        var allStatesCovidData: CovidValueSet[] = [];
 
         data.forEach(covidData => {
             var stateCode: string = covidData["state"];
@@ -37,7 +63,7 @@ export class CovidValueService{
 
             var covidValue = new CovidValue(positive + negative, positive, this.parseDate(date));
 
-            var stateCovidDataSet = this.stateService.getStateDataSet(allStatesCovidData, stateCode);
+            var stateCovidDataSet = this.getStateDataSet(allStatesCovidData, stateCode);
 
             //First check is for states that aren't in the Covid Value Set yet (will run once for each state)
             if(stateCovidDataSet === undefined){
@@ -68,5 +94,11 @@ export class CovidValueService{
         var parsedDate = new Date(year, month, day);
 
         return parsedDate;
+    }
+
+    public getStateDataSet(statesData: CovidValueSet[], stateCode: string): CovidValueSet{
+        return statesData.find(stateCovidValue => {
+            return stateCovidValue?.state?.code === stateCode;
+        });
     }
 }

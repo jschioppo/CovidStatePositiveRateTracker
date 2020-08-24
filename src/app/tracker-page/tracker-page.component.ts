@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CovidValueService } from 'src/services/covid-value-fetcher.service';
 import { CovidValueSet } from 'src/models/covid-value-set.model';
 import { State } from 'src/models/state.model';
@@ -6,6 +6,7 @@ import { StateService } from 'src/services/state-helper.service';
 import * as $ from 'jquery';
 import { DateFilterService } from 'src/services/date-filter.service';
 import { DayRange } from 'src/models/day-range.enum';
+import { GraphViewComponent } from './graph-view/graph-view.component';
 
 @Component({
   selector: 'app-tracker-page',
@@ -14,9 +15,12 @@ import { DayRange } from 'src/models/day-range.enum';
 })
 export class TrackerPageComponent implements OnInit {
 
-  countryCovidData: CovidValueSet[];
+
+  statesCovidData: CovidValueSet[];
+  countryCovidData: CovidValueSet;
   stateCovidData: CovidValueSet;
   filteredStateCovidData: CovidValueSet;
+
   stateCode: string;
   states: State[];
   dayRange: DayRange = DayRange.Week;
@@ -24,6 +28,7 @@ export class TrackerPageComponent implements OnInit {
   private static stateService: StateService;
   private static dateFilterService: DateFilterService;
   
+  @ViewChild(GraphViewComponent) graphViewChild: GraphViewComponent;
 
   constructor(private covidValueService: CovidValueService, private stateService: StateService, private dateFilterService: DateFilterService) {
     this.stateService = stateService;
@@ -33,6 +38,10 @@ export class TrackerPageComponent implements OnInit {
     this.states = this.stateService.getListOfStates();
 
     covidValueService.getStatesData().subscribe(data => {
+      this.statesCovidData = data;
+    });
+
+    covidValueService.getUsData().subscribe(data => {
       this.countryCovidData = data;
     });
   }
@@ -41,8 +50,12 @@ export class TrackerPageComponent implements OnInit {
   }
 
   onStateChange(stateCode){
-    this.stateCovidData = this.stateService.getStateDataSet(this.countryCovidData, stateCode);
+    if(stateCode == 'US') this.stateCovidData = this.countryCovidData;
+    else this.stateCovidData = this.covidValueService.getStateDataSet(this.statesCovidData, stateCode);
+
     this.filterDataSet();
+
+    this.graphViewChild.addState(null);
   }
 
   onDateRangeChange(range){
@@ -51,10 +64,6 @@ export class TrackerPageComponent implements OnInit {
 
     this.dayRange = DayRange[range];
     this.filterDataSet();
-    // if(this.stateCovidData != undefined) this.filteredStateCovidData = {
-    //   state: this.stateCovidData.state, 
-    //   dayData: this.dateFilterService.filterDataSet(this.stateCovidData.dayData,this.dayRange)
-    // };
   }
 
   private filterDataSet(): void{

@@ -13,6 +13,15 @@ export class LineGraph{
         this.lineChartOptions = {
             responsive: true,
             maintainAspectRatio: false,
+            title: {
+              text: 'Percent of all COVID-19 tests that return positive',
+              display: true,
+              fontStyle: "bold",
+              fontSize: 18
+            },
+            legend: {
+              display: false
+            },
             scales: {
               yAxes: [{
                 scaleLabel: {

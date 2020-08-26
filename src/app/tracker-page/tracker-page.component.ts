@@ -23,7 +23,7 @@ export class TrackerPageComponent implements OnInit {
 
   stateCode: string;
   states: State[];
-  dayRange: DayRange = DayRange.Week;
+  dayRange: DayRange;
 
   private static stateService: StateService;
   private static dateFilterService: DateFilterService;
@@ -33,7 +33,7 @@ export class TrackerPageComponent implements OnInit {
   constructor(private covidValueService: CovidValueService, private stateService: StateService, private dateFilterService: DateFilterService) {
     this.stateService = stateService;
     this.dateFilterService = dateFilterService;
-    this.dayRange = DayRange.Week;
+    this.dayRange = DayRange.AllTime;
 
     this.states = this.stateService.getListOfStates();
 

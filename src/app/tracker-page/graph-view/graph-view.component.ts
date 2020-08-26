@@ -48,7 +48,7 @@ export class GraphViewComponent implements OnInit {
 
       this.lineChartModel.lineChartLabels.push(month.toString() + "/" + day.toString());
     });
-    this.lineChartModel.lineChartOptions.scales.yAxes[0].ticks.max = Math.ceil(maxPercent);
+    this.lineChartModel.lineChartOptions.scales.yAxes[0].ticks.max = Math.min(Math.ceil(maxPercent) + 1, 100);
 
     
     var dataSet: ChartDataSets = {
@@ -88,7 +88,7 @@ export class GraphViewComponent implements OnInit {
 
       this.lineChartModel.lineChartLabels.push(month.toString() + "/" + day.toString());
     });
-    this.lineChartModel.lineChartOptions.scales.yAxes[0].ticks.max = Math.ceil(maxPercent);
+    this.lineChartModel.lineChartOptions.scales.yAxes[0].ticks.max = Math.ceil(maxPercent) + 1.0;
 
     
     var dataSet: ChartDataSets = {

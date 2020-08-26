@@ -43,6 +43,9 @@ export class TrackerPageComponent implements OnInit {
 
     covidValueService.getUsData().subscribe(data => {
       this.countryCovidData = data;
+
+      this.stateCovidData = data;
+      this.filterDataSet();
     });
   }
 
@@ -54,8 +57,6 @@ export class TrackerPageComponent implements OnInit {
     else this.stateCovidData = this.covidValueService.getStateDataSet(this.statesCovidData, stateCode);
 
     this.filterDataSet();
-
-    this.graphViewChild.addState(null);
   }
 
   onDateRangeChange(range){
@@ -71,6 +72,7 @@ export class TrackerPageComponent implements OnInit {
       state: this.stateCovidData.state, 
       dayData: this.dateFilterService.filterDataSet(this.stateCovidData.dayData,this.dayRange)
     };
+
   }
 
 

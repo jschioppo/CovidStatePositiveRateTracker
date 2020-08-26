@@ -35,7 +35,6 @@
             </div>
             <div>
                 <select class="form-control" (change)="onStateChange($event.target.value)">
-                    <option></option>
                     <option *ngFor="let state of states" [value]="state.code">{{state.label}}</option>
                 </select>
             </div>

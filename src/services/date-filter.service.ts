@@ -38,7 +38,8 @@ export class DateFilterService{
                 break;
         }
 
-        newDataSet = newDataSet.filter(data => data.percentPositive < 100 && data.percentPositive > 0);
+        
+        newDataSet = newDataSet.filter(data => data.percentPositive < 100 && data.percentPositive > 0 && data.tested > 50);
         return newDataSet;
     }
 

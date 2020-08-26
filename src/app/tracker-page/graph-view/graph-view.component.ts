@@ -28,6 +28,7 @@ export class GraphViewComponent implements OnInit {
   }
 
   ngOnChanges(){
+    
     this.lineChartModel = new LineGraph();
     this.initializeGraph();
   }
